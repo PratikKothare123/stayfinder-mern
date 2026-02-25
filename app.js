@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 const Listing = require("./models/listing.js"); // If app.js and models folder are at same level, then:
 const path = require("path");
 const methodOverride = require("method-override");
+const ejsMate = require("ejs-mate");
+
+
+
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 main()
   .then(() => {
@@ -19,6 +23,8 @@ app.set("view engine", "ejs");
 app.set("views",path.join(__dirname,"views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+app.engine('ejs', ejsMate);
+app.use(express.static(path.join(__dirname,"/public")));
 
 app.get("/", (req, res) => {
   res.send("Hi Am Pratik");
@@ -72,7 +78,7 @@ app.delete("/listings/:id",async(req,res)=>{
      let {id} = req.params;
      let deletingListing = await Listing.findByIdAndDelete(id);
      console.log(deletingListing);
-     res.redirect("/listings")
+     res.redirect("/listings");
 })
 // app.get("/testListing",async(req,res)=>{
 //     let sampleListing = new Listing({
