@@ -1,4 +1,5 @@
 const express = require("express");
+require("dotenv").config();
 const app = express();
 const mongoose = require("mongoose");
 const Listing = require("./models/listing.js"); // If app.js and models folder are at same level, then:
@@ -8,7 +9,7 @@ const ejsMate = require("ejs-mate");
 
 
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const MONGO_URL = process.env.MONGO_URL;
 main()
   .then(() => {
     console.log("connected to DB");
@@ -49,9 +50,15 @@ app.get("/listings/:id",async(req,res)=>{
 });
 
 
+//Finf
+
 // Create Route
 app.post("/listings",async(req,res)=>{
     // let{title,description,location,cuntry,price} = req.body;
+    //or
+    // let listing = req.body.listing;
+    // new Listing(listing);
+    //or
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect("/listings");
