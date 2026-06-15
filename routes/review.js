@@ -4,21 +4,20 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const Listing = require("../models/listing.js");
 const Review = require("../models/review.js");
-const {validateReview} = require("../middleware.js");
-
-
+const {validateReview, isLoggedIn,isReviewAuthor} = require("../middleware.js");
 
 // =======================
 // Create Review Route
 // POST /listings/:id/reviews
 // =======================
+
 router.post(
-  "/",
+  "/",isLoggedIn,
   validateReview,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
 
-    let listing = await Listing.findById(id);
+    let listing = await Listing.findById(id); 
 
     if (!listing) {
       throw new ExpressError(404, "Listing Not Found!");
@@ -26,13 +25,13 @@ router.post(
 
     let newReview = new Review(req.body.review);
 
+    newReview.author = req.user._id;
     listing.reviews.push(newReview);
 
     await newReview.save();
     await listing.save();
 
     req.flash("success", "New Review Created!");
-
     res.redirect(`/listings/${listing._id}`);
   })
 );
@@ -42,7 +41,7 @@ router.post(
 // DELETE /listings/:id/reviews/:reviewId
 // =======================
 router.delete(
-  "/:reviewId",
+  "/:reviewId",isLoggedIn,isReviewAuthor,
   wrapAsync(async (req, res) => {
     let { id, reviewId } = req.params;
 
