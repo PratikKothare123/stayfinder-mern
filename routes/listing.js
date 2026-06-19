@@ -11,22 +11,27 @@ const {
 
 const listingController = require("../controllers/listings.js");
 
-//Index Route
-router.get("/", wrapAsync(listingController.index));
+//Index Route & Create Route
+router
+  .route("/")
+  .get(wrapAsync(listingController.index))
+  .post(
+    validateListing,
+    isLoggedIn,
+    wrapAsync(listingController.createListing),
+  );
 
-// New Route
-router.get("/new", isLoggedIn, listingController.renderNewForm);
+  // New Route
+router.get("/new", isLoggedIn, listingController.renderNewForm); //Becase if i write in down of id, server nterpret as id and find in DB
 
-// Show RouteS
-router.get("/:id", wrapAsync(listingController.showListing));
 
-// Create Route
-router.post(
-  "/",
-  validateListing,
-  isLoggedIn,
-  wrapAsync(listingController.createListing),
-);
+// Show Routes, Update Route & Delete Route
+router
+  .route("/:id")
+  .get(wrapAsync(listingController.showListing))
+  .put(isLoggedIn,isOwner,validateListing,wrapAsync(listingController.updateListing))
+  .delete(isLoggedIn, isOwner, wrapAsync(listingController.destroyListing));
+
 
 // Edit Route
 router.get(
@@ -35,25 +40,5 @@ router.get(
   isOwner,
   wrapAsync(listingController.renderEditForm),
 );
-
-// Update Route
-router.put(
-  "/:id",
-  isLoggedIn,
-  isOwner,
-  validateListing,
-  wrapAsync(listingController.updateListing),
-);
-
-
-//Delete Route
-router.delete(
-  "/:id",
-  isLoggedIn,
-  isOwner,
-  wrapAsync(listingController.destroyListing),
-);
-
-
 
 module.exports = router;
