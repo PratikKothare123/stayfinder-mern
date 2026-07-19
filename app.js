@@ -1,5 +1,10 @@
+if(process.env.NODE_ENV != "production"){  // only use in development phase, not upload in production
+  require('dotenv').config();
+}
+
+// console.log(process.env.CLOUD_NAME);
+
 const express = require("express");
-require("dotenv").config();
 const app = express();
 const mongoose = require("mongoose");
 const Listing = require("./models/listing.js"); // If app.js and models folder are at same level, then:

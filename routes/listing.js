@@ -10,16 +10,22 @@ const {
 } = require("../middleware.js");
 
 const listingController = require("../controllers/listings.js");
+const multer  = require("multer");
+const {storage} = require("../cloudConfig.js");
+const upload = multer({ storage });
 
 //Index Route & Create Route
 router
   .route("/")
   .get(wrapAsync(listingController.index))
-  .post(
-    validateListing,
-    isLoggedIn,
-    wrapAsync(listingController.createListing),
-  );
+  // .post(
+  //   validateListing,
+  //   isLoggedIn,
+  //   wrapAsync(listingController.createListing),
+  // );
+  .post(upload.single('listing[image]'),(req,res)=>{
+    res.send(req.file);
+  });
 
   // New Route
 router.get("/new", isLoggedIn, listingController.renderNewForm); //Becase if i write in down of id, server nterpret as id and find in DB
