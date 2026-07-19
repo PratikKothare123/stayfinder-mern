@@ -12,6 +12,11 @@ module.exports.renderNewForm = (req, res) => {
 module.exports.createListing = async (req, res, next) => {
     const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
+    if (req.file) {
+        let url = req.file.path;
+        let filename = req.file.filename;
+        newListing.image = { url, filename };
+    }
     await newListing.save();
     req.flash("success", "New listing created!");
     return res.redirect("/listings");
@@ -50,7 +55,13 @@ module.exports.showListing = async (req, res) => {
 
   module.exports.updateListing = async (req, res) => {
     let { id } = req.params;
-    await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+    let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+    if (req.file) {
+        let url = req.file.path;
+        let filename = req.file.filename;
+        listing.image = { url, filename };
+        await listing.save();
+    }
     req.flash("success", "Listing updated!");
     res.redirect(`/listings/${id}`);
   }

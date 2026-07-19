@@ -1,6 +1,10 @@
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
+
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUD_API_KEY,
@@ -12,7 +16,6 @@ const storage = new CloudinaryStorage({
   params: {
     folder: 'stayfinder_DEV',
    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'], // supports promises as well
-    public_id: (req, file) => 'computed-filename-using-request',
   },
 });
 
