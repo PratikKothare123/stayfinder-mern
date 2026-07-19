@@ -127,3 +127,7 @@ Show Page */
     padding-left: 0;
     padding-right: 0;
 }
+
+
+/* MAP */
+#map { height: 400px; width: 80vh; }
