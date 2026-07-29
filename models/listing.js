@@ -29,6 +29,16 @@ const listingSchema = new Schema({
             ref:"Review",
         },
     ],
+    geometry: {
+        type: {
+            type: String,
+            enum: ["Point"],
+            default: "Point",
+        },
+        coordinates: {
+            type: [Number],
+        }
+    },
     owner:{
         type: Schema.Types.ObjectId,
         ref: "User"
