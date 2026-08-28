@@ -29,7 +29,9 @@ const userRouter= require("./routes/user.js");
 
 
 
-const MONGO_URL = process.env.MONGO_URL;
+// const MONGO_URL = process.env.MONGO_URL;
+
+const dbUrl = process.env.ATLASDB_URL;
 main()
   .then(() => {
     console.log("connected to DB");
@@ -37,7 +39,7 @@ main()
   .catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect(MONGO_URL);
+  await mongoose.connect(dbUrl);
 }
 
 app.set("view engine", "ejs");
@@ -58,9 +60,9 @@ const sessionOptions = {
   },
 };
 
-app.get("/", (req, res) => {
-  res.send("Hi Am Pratik");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hi Am Pratik");
+// });
 
 app.use(session(sessionOptions));
 app.use(flash());
