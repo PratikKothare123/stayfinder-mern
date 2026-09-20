@@ -15,13 +15,15 @@ const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const { listingSchema,reviewSchema } = require("./schema.js");
 const Review = require("./models/review.js");
+const session = require("express-session");
+const { MongoStore } = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
 
-const session = require("express-session");
+
 
 const listingRouter = require("./routes/listing.js");
 const reviewRouter= require("./routes/review.js");
@@ -49,8 +51,23 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
+
+
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  crypto:{
+    secret:process.env.SECRET,
+  },
+  touchAfter: 24 * 3600,
+});
+
+store.on("error",()=>{
+  console.log("Error In MONGO SESSION STORE",err);
+});
+
 const sessionOptions = {
-  secret : "mysecretcode",
+  store,
+  secret : process.env.SECRET,
   resave : false,
   saveUninitialized: true,
   cookie :{
@@ -59,6 +76,7 @@ const sessionOptions = {
     httpOnly: true,
   },
 };
+
 
 // app.get("/", (req, res) => {
 //   res.send("Hi Am Pratik");
