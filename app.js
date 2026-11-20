@@ -131,14 +131,13 @@ app.use("/",userRouter);
 // This uses a Regex catch-all (.*) because Express 5/path-to-regexp v8+
 // no longer supports the basic '*' wildcard. It captures all undefined routes.
 app.all(/(.*)/, (req, res, next) => {
-  next(new ExpressError(404, "Page not Found!"));
+  next(new ExpressError(404, "Page Not Found!!!"));
 });
 
 app.use((err, req, res, next) => {
   let { statuscode = 500, message = "Somthing went wrong!" } = err;
   // res.status(statuscode).send(message);
   res.status(statuscode).render("listings/error.ejs", { message });
-  // res.send("somthing went wrong");
 });
 
 app.listen(8080, () => {
